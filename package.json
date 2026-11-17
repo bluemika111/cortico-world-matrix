@@ -1,0 +1,85 @@
+{
+  "name": "cortico-world-matrix",
+  "version": "0.4.9",
+  "type": "module",
+  "description": "Cortico World: Matrix over the client-server API, sync long-polling, room messages, stickers, reactions, proactive chat and voice",
+  "license": "MIT",
+  "keywords": [
+    "cortico-world",
+    "cortico",
+    "matrix",
+    "coopanion"
+  ],
+  "engines": {
+    "node": ">=22"
+  },
+  "packageManager": "pnpm@9.15.4",
+  "main": "./src/index.ts",
+  "cortico": {
+    "kind": "world",
+    "api": 6,
+    "displayName": "Matrix",
+    "webUiClient": "dist/webui.js",
+    "locales": {
+      "zh": {
+        "displayName": "Matrix 接入",
+        "description": "通过 Matrix 客户端-服务器 API 把 Coo 接到房间：sync 长轮询收消息、房间开关与监听名单、表情包、表情回应、主动说话与语音收发。"
+      },
+      "en": {
+        "displayName": "Matrix",
+        "description": "Connects Coo to Matrix rooms over the client-server API: sync long-polling, per-room switches and watch lists, stickers, reactions, proactive chat and voice."
+      }
+    },
+    "tags": [
+      "im",
+      "voice",
+      "companion",
+      "external-setup",
+      "experimental"
+    ],
+    "describe": "describe.json"
+  },
+  "files": [
+    "src",
+    "scripts",
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "describe.json"
+  ],
+  "scripts": {
+    "build": "esbuild src/webui/client.ts --bundle --format=esm --platform=browser --target=es2020 --outfile=dist/webui.js",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.web.json --noEmit",
+    "probe": "tsx scripts/probe-matrix.mts",
+    "probe:world": "tsx scripts/probe-world.mts",
+    "probe:crypto": "tsx scripts/probe-crypto.mts",
+    "probe:e2ee": "tsx scripts/probe-e2ee.mts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "cortico": "0.2.3",
+    "esbuild": "^0.28.2",
+    "matrix-bot-sdk": "^0.8.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  },
+  "peerDependencies": {
+    "matrix-bot-sdk": "^0.8.0"
+  },
+  "peerDependenciesMeta": {
+    "matrix-bot-sdk": {
+      "optional": true
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
