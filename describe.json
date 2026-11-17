@@ -1,0 +1,326 @@
+{
+  "tools": [
+    {
+      "name": "mx_send",
+      "description": "Send a message into a Matrix room. This and the other mx_ tools are the only way a person on Matrix sees anything you say; a pet bubble or the console stays on this computer. Give at most one of text, sticker and image, or voice for an audio message; reply_to and mention may accompany text. Returns the event id. Ask the operator before sending something they have not asked for.",
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "room"
+        ],
+        "properties": {
+          "room": {
+            "type": "string",
+            "description": "Room id (`!opaque:server`), an alias (`#alias:server`), a room name, or `here` for the room that last woke you (not merely the last one with activity)."
+          },
+          "text": {
+            "type": "string",
+            "description": "What to say."
+          },
+          "sticker": {
+            "type": "string",
+            "description": "Sticker name or id from mx_stickers; sent as a sticker image."
+          },
+          "image": {
+            "type": "string",
+            "description": "http(s) URL or absolute local path of an image. It is uploaded to the homeserver first."
+          },
+          "voice": {
+            "type": "string",
+            "description": "Text to synthesise and send as a voice message instead of text."
+          },
+          "mention": {
+            "type": "string",
+            "description": "Who to mention: a userId, `@localpart`, or a display name from the room."
+          },
+          "reply_to": {
+            "type": "string",
+            "description": "Event id to quote, or `last` for the message that last woke you."
+          }
+        }
+      },
+      "tags": [
+        "speak"
+      ],
+      "summary": {
+        "zh": "往房间发一条消息，可以带表情包、图片、语音或引用。",
+        "en": "Sends one message into a room, with a sticker, image, voice or quote."
+      }
+    },
+    {
+      "name": "mx_stickers",
+      "description": "List or search the sticker library Coo owns. Empty query returns a sample; results carry the name to pass to mx_send. When the current model accepts images, the first few matches come back as attachments, so pick by looking at them rather than by name alone. Read-only.",
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "Words to match against sticker names and packs."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 40,
+            "description": "How many to return. Default 12."
+          }
+        }
+      },
+      "tags": [
+        "read"
+      ],
+      "summary": {
+        "zh": "列出或搜索 Coo 自己的表情包图库；前几张会连同图片一起给出来。",
+        "en": "Lists or searches the sticker library Coo owns; the first few matches come with their images."
+      }
+    },
+    {
+      "name": "mx_voice",
+      "description": "Speak a line into a room as a voice message, using the configured voice service. Falls back to text when synthesis is off, fails, or the audio is too long.",
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "room",
+          "text"
+        ],
+        "properties": {
+          "room": {
+            "type": "string",
+            "description": "Room id (`!opaque:server`), an alias (`#alias:server`), a room name, or `here` for the room that last woke you (not merely the last one with activity)."
+          },
+          "text": {
+            "type": "string",
+            "description": "What to say out loud."
+          }
+        }
+      },
+      "tags": [
+        "speak"
+      ],
+      "summary": {
+        "zh": "把一句话合成语音发出去。",
+        "en": "Synthesises a line and sends it as a voice message."
+      }
+    },
+    {
+      "name": "mx_react",
+      "description": "Attach an emoji reaction to a message. Matrix reactions are emoji only; the reaction is visible to everyone in the room. Without an event id it reacts to the message that last woke you.",
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "emoji"
+        ],
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "description": "Event id from mx_history. Omit to react to the message that last woke you."
+          },
+          "emoji": {
+            "type": "string",
+            "description": "One emoji, for example 👍."
+          }
+        }
+      },
+      "tags": [
+        "act"
+      ],
+      "summary": {
+        "zh": "给一条消息贴一个表情。",
+        "en": "Attaches an emoji to a message as a reaction."
+      }
+    },
+    {
+      "name": "mx_redact",
+      "description": "Delete one of your own messages. The deletion is visible to everyone in the room and cannot be undone. Without an event id it deletes the last message you sent in that room.",
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "description": "Event id of your own message, from mx_history. Omit to delete the last message you sent in that room."
+          },
+          "reason": {
+            "type": "string",
+            "description": "Reason shown in the room settings after the deletion."
+          }
+        }
+      },
+      "tags": [
+        "act"
+      ],
+      "summary": {
+        "zh": "撤回自己发的一条消息。",
+        "en": "Deletes one of its own messages."
+      }
+    },
+    {
+      "name": "mx_history",
+      "description": "Read recent messages from a watched room, or a window around one event id, from this World's record. Each line starts with the event id, which is what mx_react, mx_redact and reply_to take. Read-only.",
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "room": {
+            "type": "string",
+            "description": "Room id (`!opaque:server`), an alias (`#alias:server`), a room name, or `here` for the room that last woke you (not merely the last one with activity). Omit to read the room behind your current context."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 200,
+            "description": "How many recent messages. Default 30."
+          },
+          "around_event_id": {
+            "type": "string",
+            "description": "Centre the window on this event id instead."
+          }
+        }
+      },
+      "tags": [
+        "read"
+      ],
+      "summary": {
+        "zh": "读某个房间的近期记录，或某条消息前后的一段。",
+        "en": "Reads recent messages of a room, or a window around one message."
+      }
+    },
+    {
+      "name": "mx_search",
+      "description": "Search the recorded messages of watched rooms by keyword, with a few messages around each hit. Read-only.",
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "keyword"
+        ],
+        "properties": {
+          "keyword": {
+            "type": "string",
+            "description": "Plain text, matched case-insensitively."
+          },
+          "context": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10,
+            "description": "Messages before and after each hit. Default 2."
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20,
+            "description": "How many hits. Default 5."
+          }
+        }
+      },
+      "tags": [
+        "read"
+      ],
+      "summary": {
+        "zh": "按关键词搜已记录的会话消息。",
+        "en": "Searches recorded messages by keyword."
+      }
+    },
+    {
+      "name": "mx_rooms",
+      "description": "List the rooms this account has joined, with room id, members, whether encryption is on, and which ones are watched. Read-only; use it to choose the room for mx_send or to find who to mention.",
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      },
+      "tags": [
+        "read"
+      ],
+      "summary": {
+        "zh": "列出已加入的房间、成员数与加密状态。",
+        "en": "Lists joined rooms with member counts and encryption state."
+      }
+    },
+    {
+      "name": "mx_status",
+      "description": "Report the connection state, the signed-in account, and which rooms are being watched. Read-only; do not poll it.",
+      "parameters": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {}
+      },
+      "tags": [
+        "read"
+      ],
+      "summary": {
+        "zh": "报连接状态、账号与正在监听的房间。",
+        "en": "Reports the connection, the account and the watched rooms."
+      }
+    }
+  ],
+  "events": [
+    {
+      "type": "matrix.message",
+      "description": {
+        "zh": "监听的房间里来了一条消息；被 @ 或被回复时立即投递。",
+        "en": "A message in a watched room; delivered at once when the bot is mentioned or replied to."
+      }
+    },
+    {
+      "type": "matrix.reaction",
+      "description": {
+        "zh": "有人给一条消息贴了表情。",
+        "en": "Someone reacted to a message with an emoji."
+      }
+    },
+    {
+      "type": "matrix.redaction",
+      "description": {
+        "zh": "有人撤回了一条消息。",
+        "en": "Someone redacted a message."
+      }
+    },
+    {
+      "type": "matrix.member",
+      "description": {
+        "zh": "有人加入、离开、被邀请或移出了房间。",
+        "en": "Someone joined, left, was invited to or was removed from a room."
+      }
+    },
+    {
+      "type": "matrix.room",
+      "description": {
+        "zh": "房间改名、改主题或打开了端到端加密。",
+        "en": "A room was renamed, got a new topic, or turned encryption on."
+      }
+    },
+    {
+      "type": "matrix.transcript",
+      "description": {
+        "zh": "一条语音的转写结果，或没能转写的原因。",
+        "en": "The transcript of a voice message, or why transcription failed."
+      }
+    },
+    {
+      "type": "matrix.proactive",
+      "description": {
+        "zh": "主动开口的机会：某个房间安静够了，说不说由模型决定。",
+        "en": "A proactive opening: one room has been quiet long enough; whether to speak is the model call."
+      }
+    },
+    {
+      "type": "matrix.status",
+      "description": {
+        "zh": "与服务器的同步建立或断开。",
+        "en": "The sync with the homeserver came up or went down."
+      }
+    }
+  ],
+  "prompts": [
+    {
+      "key": "worlds.matrix.envPrompt",
+      "title": "Matrix 接入 · 环境提示词",
+      "role": "envPrompt",
+      "content": "你在 Matrix 上。下面是这个账号此刻的样子。\n\n身份：{{matrix.identity}}\n\n正在参与的房间：\n{{matrix.rooms | (还没有加入任何房间。)}}\n\n此刻可用的能力：{{matrix.capabilities}}\n\n事件从 Matrix 来：房间里的新消息、别人的表情回应、撤回、成员进出与房间设置变化。被 @、被回复时会立刻叫醒你；其他消息按平台的节奏合批过来。每行开头是 `[Matrix-房间名 时间]`，后面是说话人和内容。\n\n要引用、贴表情或撤回某条消息时，不给 id 就是对「刚叫醒你的那条」动手；要指向更早的消息，先用 `mx_history` 查事件 id——正文里不印它，四十多个字符会把对话读成一堆乱码。要提人时把显示名或 `@本地名` 传给 `mx_send` 的 `mention`，`mx_rooms` 里有完整 userId。\n\n**消息从哪个平台来，就回到哪个平台。** Matrix 上收到的话，只有 `mx_send`（以及 `mx_voice`、`mx_react`）能让对方看见；桌宠气泡（`pet_say`、`pet_ask`）、控制台和界面上的文字都只在这台电脑上可见，Matrix 那头的人看不到。有人从 Matrix 问话时，回到 Matrix 去答——在气泡里另外说一句可以，但不能代替 Matrix 上的回复。\n\n图片与文件在正文里先是占位；图片能下载下来时会作为附件一并给你，拿不到时正文会写明。语音先到的是 `[语音]` 占位，转写结果另发一条 `[Matrix-房间名 时间] 谁 的语音：…`；没转成也会明说原因，那条语音本身还在记录里。\n\n表情包是本地图库里的图片，用 `mx_stickers` 挑、用 `mx_send` 的 `sticker` 参数发。发消息、贴表情、撤回都会改变外部状态，别人会看到。\n\n`here` 指最近一次叫醒你的那个房间，不是「最后有人说话的地方」：别的房间有人聊天但那边推送关着时，`here` 不会漂过去。发之前看一眼回执里的房间名——它写的是这条消息实际去了哪里。关掉的通道发不出任何东西，工具会明确告诉你被拦了；不要在别处补发同样的内容。\n\n主动开口的机会是事件，不是命令：`[Matrix-房间名 时间] 这个房间已经 … 没有新消息了` 告诉你哪个房间安静了多久、今天第几次；要不要说话、说什么、说到哪里，你自己决定，不说也可以。\n"
+    }
+  ]
+}
