@@ -1,6 +1,6 @@
 {
   "name": "cortico-world-matrix",
-  "version": "0.4.9",
+  "version": "0.4.10",
   "type": "module",
   "description": "Cortico World: Matrix over the client-server API, sync long-polling, room messages, stickers, reactions, proactive chat and voice",
   "license": "MIT",
@@ -74,6 +74,7 @@
     }
   }
 }
+
 
 
 
